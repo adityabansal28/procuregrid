@@ -14,8 +14,9 @@ export function Hero() {
           height={1080}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-90" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_oklch(0.55_0.18_250_/_0.35),_transparent_60%)]" />
+        {/* Darken for text legibility while keeping factory visible */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.18_0.06_255_/_0.85)] via-[oklch(0.22_0.08_255_/_0.7)] to-[oklch(0.32_0.12_250_/_0.55)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_oklch(0.55_0.18_250_/_0.25),_transparent_60%)]" />
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-24 md:py-32 lg:py-40">
