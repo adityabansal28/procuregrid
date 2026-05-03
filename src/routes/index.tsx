@@ -1,26 +1,50 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/site/Navbar";
+import { Hero } from "@/components/site/Hero";
+import { Stats } from "@/components/site/Stats";
+import { Problem } from "@/components/site/Problem";
+import { Modules } from "@/components/site/Modules";
+import { Workflow } from "@/components/site/Workflow";
+import { TrustLayer } from "@/components/site/TrustLayer";
+import { Verticals } from "@/components/site/Verticals";
+import { CTA } from "@/components/site/CTA";
+import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "ProcureGrid — Protected Procurement for Indian Manufacturing" },
+      {
+        name: "description",
+        content:
+          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow. The procurement operating system for Indian SMEs and manufacturers.",
+      },
+      { property: "og:title", content: "ProcureGrid — Protected Procurement for Indian Manufacturing" },
+      {
+        property: "og:description",
+        content:
+          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow built for Indian manufacturing.",
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main>
+        <Hero />
+        <Stats />
+        <Problem />
+        <Modules />
+        <Workflow />
+        <TrustLayer />
+        <Verticals />
+        <CTA />
+      </main>
+      <Footer />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
