@@ -13,7 +13,7 @@ export function Footer() {
               <span className="text-lg font-bold tracking-tight">ProcureGrid</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Protected procurement infrastructure for Indian manufacturing.
+              Protected procurement infrastructure for every buyer and seller.
             </p>
           </div>
 
