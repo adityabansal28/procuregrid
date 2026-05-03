@@ -14,17 +14,17 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "ProcureGrid — Protected Procurement for Every Buyer & Seller" },
+      { title: "ProcureGrid — Protected Procurement for Indian Manufacturing" },
       {
         name: "description",
         content:
-          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow. The procurement operating system for anyone who buys or sells.",
+          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow. The procurement operating system for Indian SMEs and manufacturers.",
       },
-      { property: "og:title", content: "ProcureGrid — Protected Procurement for Every Buyer & Seller" },
+      { property: "og:title", content: "ProcureGrid — Protected Procurement for Indian Manufacturing" },
       {
         property: "og:description",
         content:
-          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow for anyone who buys or sells.",
+          "Verified suppliers, escrow-backed payments and full RFQ-to-payment workflow built for Indian manufacturing.",
       },
     ],
   }),

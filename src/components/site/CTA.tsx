@@ -12,7 +12,7 @@ export function CTA() {
               Run procurement like infrastructure.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-white/75">
-              Flexible plans for every buyer and seller. Verification, escrow and analytics included on every tier.
+              Plans from ₹5,000/mo for SMEs. Verification, escrow and analytics included on every tier.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
