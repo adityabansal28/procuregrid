@@ -45,7 +45,7 @@ export function Modules() {
             </h2>
           </div>
           <p className="max-w-md text-base text-muted-foreground">
-            Procurement-native. Manufacturing-focused. Built for SMEs and mid-sized factories — not enterprise IT departments.
+            Procurement-native and built to be simple — for any buyer or seller, of any size.
           </p>
         </div>
 

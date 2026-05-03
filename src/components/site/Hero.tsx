@@ -9,7 +9,7 @@ export function Hero() {
       <div className="absolute inset-0">
         <img
           src={heroImg}
-          alt="Indian manufacturing factory floor with CNC machines"
+          alt="Modern production facility"
           width={1920}
           height={1080}
           className="h-full w-full object-cover"
@@ -23,13 +23,13 @@ export function Hero() {
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
-            Built for Indian manufacturing & industrial procurement
+            Built for everyone who buys or sells
           </div>
 
           <h1 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl lg:text-7xl">
             Protected procurement <br />
             <span className="bg-gradient-to-r from-accent to-[oklch(0.9_0.14_85)] bg-clip-text text-transparent">
-              for serious manufacturers.
+              for every buyer and seller.
             </span>
           </h1>
 
