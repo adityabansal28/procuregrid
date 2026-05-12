@@ -25,8 +25,12 @@ export function Navbar() {
 
         <div className="flex items-center gap-1 sm:gap-2">
           <LanguageSwitcher />
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex">{t("nav.signIn")}</Button>
-          <Button size="sm" className="bg-foreground text-background hover:bg-foreground/90">{t("nav.requestDemo")}</Button>
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <Link to="/login">{t("nav.signIn")}</Link>
+          </Button>
+          <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90">
+            <Link to="/signup">{t("nav.requestDemo")}</Link>
+          </Button>
         </div>
       </div>
     </header>
