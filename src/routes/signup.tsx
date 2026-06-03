@@ -14,8 +14,14 @@ import {
 } from "@/components/ui/select";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
-import { buildE164PhoneNumber, parseIdentifierByType, type AuthIdentifierType } from "@/lib/auth-identifiers";
+import {
+  buildE164PhoneNumber,
+  parseIdentifierByType,
+  type AuthIdentifierType,
+} from "@/lib/auth-identifiers";
+import { beginPhoneAuth } from "@/lib/phone-auth";
 import { defaultPhoneCountry, getPhoneCountry, phoneCountries } from "@/lib/phone-countries";
+import { upsertProfileForUser } from "@/lib/profile-sync";
 import signupImg from "@/assets/signup-procurement-illustration.svg";
 
 export const Route = createFileRoute("/signup")({
@@ -43,7 +49,7 @@ function SignupPage() {
         })();
   const canSubmit =
     fullName.trim().length > 0 &&
-    password.length >= 8 &&
+    (accountMethod === "phone" || password.length >= 8) &&
     !submitting &&
     parsedSignupIdentifier !== null;
 
@@ -88,16 +94,40 @@ function SignupPage() {
     }
 
     const supabase = getSupabaseBrowserClient();
+    if (parsedIdentifier.type === "phone") {
+      const { error: phoneAuthError } = await beginPhoneAuth({
+        supabase,
+        phone: parsedIdentifier.value,
+        fullName,
+        mode: "signup",
+      });
+
+      if (phoneAuthError) {
+        setError(phoneAuthError.message);
+        setSubmitting(false);
+        return;
+      }
+
+      setSubmitting(false);
+      navigate({
+        to: "/verify-phone",
+        search: {
+          phone: parsedIdentifier.value,
+          fullName,
+          mode: "signup",
+        },
+        replace: true,
+      });
+      return;
+    }
+
     const { data, error: signUpError } = await supabase.auth.signUp({
-      ...(parsedIdentifier.type === "email"
-        ? { email: parsedIdentifier.value }
-        : { phone: parsedIdentifier.value }),
+      email: parsedIdentifier.value,
       password,
       options: {
         data: {
           full_name: fullName,
         },
-        ...(parsedIdentifier.type === "phone" ? { channel: "sms" as const } : {}),
       },
     });
 
@@ -108,13 +138,12 @@ function SignupPage() {
     }
 
     const nextUser = data.user;
-    if (nextUser) {
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: nextUser.id,
-        full_name: fullName,
-        auth_identifier_type: parsedIdentifier.type,
-        contact_email: parsedIdentifier.type === "email" ? parsedIdentifier.value : null,
-        contact_phone_e164: parsedIdentifier.type === "phone" ? parsedIdentifier.value : null,
+    if (nextUser && data.session) {
+      const { error: profileError } = await upsertProfileForUser(nextUser, {
+        fullName,
+        authIdentifierType: parsedIdentifier.type,
+        contactEmail: parsedIdentifier.type === "email" ? parsedIdentifier.value : null,
+        contactPhoneE164: parsedIdentifier.type === "phone" ? parsedIdentifier.value : null,
       });
 
       if (profileError) {
@@ -127,15 +156,6 @@ function SignupPage() {
     setSubmitting(false);
 
     if (!data.session) {
-      if (parsedIdentifier.type === "phone") {
-        navigate({
-          to: "/verify-phone",
-          search: { phone: parsedIdentifier.value },
-          replace: true,
-        });
-        return;
-      }
-
       setError(t("authPages.signup.checkEmailNotice"));
       return;
     }
@@ -163,9 +183,7 @@ function SignupPage() {
               <h1 className="mt-6 text-4xl font-bold leading-tight">
                 {t("authPages.signup.heroTitle")}
               </h1>
-              <p className="mt-4 text-lg text-white/75">
-                {t("authPages.signup.heroSubtitle")}
-              </p>
+              <p className="mt-4 text-lg text-white/75">{t("authPages.signup.heroSubtitle")}</p>
             </div>
           </div>
         </div>
@@ -204,7 +222,9 @@ function SignupPage() {
                     </Button>
                   </div>
                   {accountMethod === "phone" ? (
-                    <p className="text-xs text-muted-foreground">{t("authPages.signup.phoneVerificationNotice")}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("authPages.signup.phoneVerificationNotice")}
+                    </p>
                   ) : null}
                 </div>
 
@@ -225,7 +245,9 @@ function SignupPage() {
 
                 {accountMethod === "phone" ? (
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">{t("authPages.signup.countryCodeLabel")}</label>
+                    <label className="text-sm font-medium">
+                      {t("authPages.signup.countryCodeLabel")}
+                    </label>
                     <Select value={phoneCountry} onValueChange={setPhoneCountry}>
                       <SelectTrigger>
                         <SelectValue />
@@ -241,12 +263,12 @@ function SignupPage() {
                   </div>
                 ) : null}
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="identifier">
-                  {accountMethod === "email"
-                    ? t("authPages.signup.emailLabel")
-                    : t("authPages.signup.phoneLabel")}
-                </label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="identifier">
+                    {accountMethod === "email"
+                      ? t("authPages.signup.emailLabel")
+                      : t("authPages.signup.phoneLabel")}
+                  </label>
                   <Input
                     id="identifier"
                     type={accountMethod === "email" ? "email" : "tel"}
@@ -262,32 +284,41 @@ function SignupPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium" htmlFor="password">
-                    {t("authPages.signup.passwordLabel")}
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={8}
-                    placeholder={t("authPages.signup.passwordPlaceholder")}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
-                </div>
+                {accountMethod === "email" ? (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="password">
+                      {t("authPages.signup.passwordLabel")}
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete="new-password"
+                      minLength={8}
+                      placeholder={t("authPages.signup.passwordPlaceholder")}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                    />
+                  </div>
+                ) : null}
 
                 {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
                 <Button className="w-full" disabled={!canSubmit} type="submit">
-                  {submitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : t("authPages.signup.submit")}
+                  {submitting ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t("authPages.signup.submit")
+                  )}
                 </Button>
               </form>
 
               <p className="mt-6 text-sm text-muted-foreground">
                 {t("authPages.signup.loginPrompt")}{" "}
-                <Link className="font-medium text-foreground underline underline-offset-4" to="/login">
+                <Link
+                  className="font-medium text-foreground underline underline-offset-4"
+                  to="/login"
+                >
                   {t("authPages.signup.loginLink")}
                 </Link>
               </p>

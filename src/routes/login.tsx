@@ -14,7 +14,12 @@ import {
 } from "@/components/ui/select";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
-import { buildE164PhoneNumber, parseIdentifierByType, type AuthIdentifierType } from "@/lib/auth-identifiers";
+import {
+  buildE164PhoneNumber,
+  parseIdentifierByType,
+  type AuthIdentifierType,
+} from "@/lib/auth-identifiers";
+import { beginPhoneAuth } from "@/lib/phone-auth";
 import { defaultPhoneCountry, getPhoneCountry, phoneCountries } from "@/lib/phone-countries";
 import heroImg from "@/assets/hero-factory.jpg";
 
@@ -33,7 +38,10 @@ function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitStage, setSubmitStage] = useState<string | null>(null);
-  const canSubmit = identifier.trim().length > 0 && password.length > 0 && !submitting;
+  const canSubmit =
+    identifier.trim().length > 0 &&
+    (accountMethod === "phone" || password.length > 0) &&
+    !submitting;
 
   useEffect(() => {
     if (loading) return;
@@ -69,16 +77,42 @@ function LoginPage() {
       }
 
       if (!parsedIdentifier) {
-        setError(accountMethod === "email" ? t("authPages.signup.invalidEmail") : t("authPages.login.invalidIdentifier"));
+        setError(
+          accountMethod === "email"
+            ? t("authPages.signup.invalidEmail")
+            : t("authPages.login.invalidIdentifier"),
+        );
         shouldClearStage = true;
         return;
       }
 
       const supabase = getSupabaseBrowserClient();
+      if (parsedIdentifier.type === "phone") {
+        const { error: phoneAuthError } = await beginPhoneAuth({
+          supabase,
+          phone: parsedIdentifier.value,
+          mode: "login",
+        });
+
+        if (phoneAuthError) {
+          setError(phoneAuthError.message);
+          shouldClearStage = true;
+          return;
+        }
+
+        navigate({
+          to: "/verify-phone",
+          search: {
+            phone: parsedIdentifier.value,
+            mode: "login",
+          },
+          replace: true,
+        });
+        return;
+      }
+
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        ...(parsedIdentifier.type === "email"
-          ? { email: parsedIdentifier.value }
-          : { phone: parsedIdentifier.value }),
+        email: parsedIdentifier.value,
         password,
       });
 
@@ -130,9 +164,7 @@ function LoginPage() {
               <h1 className="mt-6 text-4xl font-bold leading-tight">
                 {t("authPages.login.heroTitle")}
               </h1>
-              <p className="mt-4 text-lg text-white/75">
-                {t("authPages.login.heroSubtitle")}
-              </p>
+              <p className="mt-4 text-lg text-white/75">{t("authPages.login.heroSubtitle")}</p>
             </div>
           </div>
         </div>
@@ -174,7 +206,9 @@ function LoginPage() {
 
                 {accountMethod === "phone" ? (
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">{t("authPages.login.countryCodeLabel")}</label>
+                    <label className="text-sm font-medium">
+                      {t("authPages.login.countryCodeLabel")}
+                    </label>
                     <Select value={phoneCountry} onValueChange={setPhoneCountry}>
                       <SelectTrigger>
                         <SelectValue />
@@ -209,32 +243,43 @@ function LoginPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium" htmlFor="password">
-                    {t("authPages.login.passwordLabel")}
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    autoComplete="current-password"
-                    placeholder={t("authPages.login.passwordPlaceholder")}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                  />
-                </div>
+                {accountMethod === "email" ? (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="password">
+                      {t("authPages.login.passwordLabel")}
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete="current-password"
+                      placeholder={t("authPages.login.passwordPlaceholder")}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                    />
+                  </div>
+                ) : null}
 
                 {error ? <p className="text-sm text-destructive">{error}</p> : null}
-                {submitting && submitStage ? <p className="text-sm text-muted-foreground">{submitStage}</p> : null}
+                {submitting && submitStage ? (
+                  <p className="text-sm text-muted-foreground">{submitStage}</p>
+                ) : null}
 
                 <Button className="w-full" disabled={!canSubmit} type="submit">
-                  {submitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : t("authPages.login.submit")}
+                  {submitting ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t("authPages.login.submit")
+                  )}
                 </Button>
               </form>
 
               <p className="mt-6 text-sm text-muted-foreground">
                 {t("authPages.login.signupPrompt")}{" "}
-                <Link className="font-medium text-foreground underline underline-offset-4" to="/signup">
+                <Link
+                  className="font-medium text-foreground underline underline-offset-4"
+                  to="/signup"
+                >
                   {t("authPages.login.signupLink")}
                 </Link>
               </p>

@@ -8,11 +8,15 @@ import { Input } from "@/components/ui/input";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { normalizePhoneNumber } from "@/lib/auth-identifiers";
+import { completePhoneSignup, isManualPhoneAuthEnabled, verifyPhoneAuth } from "@/lib/phone-auth";
+import { upsertProfileForUser } from "@/lib/profile-sync";
 import signupImg from "@/assets/signup-procurement-illustration.svg";
 
 export const Route = createFileRoute("/verify-phone")({
   validateSearch: (search: Record<string, unknown>) => ({
     phone: typeof search.phone === "string" ? search.phone : "",
+    fullName: typeof search.fullName === "string" ? search.fullName : "",
+    mode: search.mode === "login" ? "login" : "signup",
   }),
   component: VerifyPhonePage,
 });
@@ -20,7 +24,7 @@ export const Route = createFileRoute("/verify-phone")({
 function VerifyPhonePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { phone } = Route.useSearch();
+  const { phone, fullName, mode } = Route.useSearch();
   const { user, company, loading, refreshSession } = useAuth();
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -57,10 +61,11 @@ function VerifyPhonePage() {
 
     try {
       const supabase = getSupabaseBrowserClient();
-      const { error: verifyError } = await supabase.auth.verifyOtp({
+      const { error: verifyError } = await verifyPhoneAuth({
+        supabase,
         phone: normalizedPhone,
-        token: code.trim(),
-        type: "sms",
+        code: code.trim(),
+        mode,
       });
 
       if (verifyError) {
@@ -68,8 +73,33 @@ function VerifyPhonePage() {
         return;
       }
 
+      if (mode === "signup" && isManualPhoneAuthEnabled()) {
+        const { error: completeSignupError } = await completePhoneSignup({
+          supabase,
+          phone: normalizedPhone,
+          fullName,
+        });
+
+        if (completeSignupError) {
+          setError(completeSignupError.message);
+          return;
+        }
+      }
+
       const nextState = await refreshSession();
       if (nextState.user) {
+        const { error: profileError } = await upsertProfileForUser(nextState.user, {
+          fullName: fullName || nextState.user.user_metadata.full_name || null,
+          authIdentifierType: "phone",
+          contactEmail: nextState.user.email ?? null,
+          contactPhoneE164: normalizedPhone,
+        });
+
+        if (profileError) {
+          setError(profileError.message);
+          return;
+        }
+
         navigate({ to: "/onboarding/company", replace: true });
         return;
       }
@@ -102,9 +132,7 @@ function VerifyPhonePage() {
               <h1 className="mt-6 text-4xl font-bold leading-tight">
                 {t("authPages.verifyPhone.title")}
               </h1>
-              <p className="mt-4 text-lg text-white/75">
-                {t("authPages.verifyPhone.description")}
-              </p>
+              <p className="mt-4 text-lg text-white/75">{t("authPages.verifyPhone.description")}</p>
             </div>
           </div>
         </div>
@@ -143,16 +171,28 @@ function VerifyPhonePage() {
                 {normalizedPhone ? (
                   <p className="text-sm text-muted-foreground">{normalizedPhone}</p>
                 ) : null}
+                {isManualPhoneAuthEnabled() ? (
+                  <p className="text-sm text-muted-foreground">
+                    Temporary manual OTP is enabled for phone authentication.
+                  </p>
+                ) : null}
                 {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
                 <Button className="w-full" disabled={!canSubmit} type="submit">
-                  {submitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : t("authPages.verifyPhone.submit")}
+                  {submitting ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t("authPages.verifyPhone.submit")
+                  )}
                 </Button>
               </form>
 
               <p className="mt-6 text-sm text-muted-foreground">
-                <Link className="font-medium text-foreground underline underline-offset-4" to="/signup">
-                  {t("authPages.verifyPhone.backToSignup")}
+                <Link
+                  className="font-medium text-foreground underline underline-offset-4"
+                  to={mode === "login" ? "/login" : "/signup"}
+                >
+                  {mode === "login" ? "Back to sign in" : t("authPages.verifyPhone.backToSignup")}
                 </Link>
               </p>
             </CardContent>
