@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { LoaderCircle, type LucideIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth";
 
@@ -13,6 +14,7 @@ export function ProtectedPlaceholderPage({
   description: string;
   icon: LucideIcon;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, company, loading } = useAuth();
 
@@ -48,8 +50,7 @@ export function ProtectedPlaceholderPage({
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              This section is now reserved for authenticated users and is ready for the next round
-              of implementation.
+              {t("workspace.placeholder.protectedDescription")}
             </p>
           </CardContent>
         </Card>

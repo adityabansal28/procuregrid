@@ -69,18 +69,16 @@ function SignupPage() {
     setSubmitting(true);
     setError(null);
 
-    const parsedIdentifier =
-      accountMethod === "email"
-        ? parseIdentifierByType("email", identifier)
-        : (() => {
-            const result = buildE164PhoneNumber(selectedPhoneCountry, identifier);
-            return "value" in result ? { type: "phone" as const, value: result.value } : result;
-          })();
+    let parsedIdentifier = parseIdentifierByType("email", identifier);
 
-    if (accountMethod === "phone" && parsedIdentifier && "error" in parsedIdentifier) {
-      setError(parsedIdentifier.error);
-      setSubmitting(false);
-      return;
+    if (accountMethod === "phone") {
+      const phoneResult = buildE164PhoneNumber(selectedPhoneCountry, identifier);
+      if (!phoneResult.value) {
+        setError(phoneResult.error ?? t("authPages.signup.invalidPhone"));
+        setSubmitting(false);
+        return;
+      }
+      parsedIdentifier = { type: "phone", value: phoneResult.value };
     }
 
     if (!parsedIdentifier) {
@@ -141,9 +139,9 @@ function SignupPage() {
     if (nextUser && data.session) {
       const { error: profileError } = await upsertProfileForUser(nextUser, {
         fullName,
-        authIdentifierType: parsedIdentifier.type,
-        contactEmail: parsedIdentifier.type === "email" ? parsedIdentifier.value : null,
-        contactPhoneE164: parsedIdentifier.type === "phone" ? parsedIdentifier.value : null,
+        authIdentifierType: "email",
+        contactEmail: parsedIdentifier.value,
+        contactPhoneE164: null,
       });
 
       if (profileError) {

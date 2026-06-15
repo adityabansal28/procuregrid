@@ -1,4 +1,11 @@
-import { FileSpreadsheet, MessageSquare, AlertTriangle, Clock, EyeOff, Banknote } from "lucide-react";
+import {
+  FileSpreadsheet,
+  MessageSquare,
+  AlertTriangle,
+  Clock,
+  EyeOff,
+  Banknote,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const pains = [
@@ -16,8 +23,12 @@ export function Problem() {
     <section className="bg-background py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <div className="text-xs font-semibold uppercase tracking-widest text-primary-glow">{t("problem.eyebrow")}</div>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">{t("problem.title")}</h2>
+          <div className="text-xs font-semibold uppercase tracking-widest text-primary-glow">
+            {t("problem.eyebrow")}
+          </div>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">
+            {t("problem.title")}
+          </h2>
           <p className="mt-4 text-lg text-muted-foreground">{t("problem.subtitle")}</p>
         </div>
 
@@ -28,7 +39,9 @@ export function Problem() {
                 <p.icon className="h-5 w-5" />
               </div>
               <h3 className="mt-5 text-base font-semibold">{t(`problem.items.${p.k}.t`)}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{t(`problem.items.${p.k}.d`)}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {t(`problem.items.${p.k}.d`)}
+              </p>
             </div>
           ))}
         </div>

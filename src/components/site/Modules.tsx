@@ -17,8 +17,12 @@ export function Modules() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <div className="text-xs font-semibold uppercase tracking-widest text-primary-glow">{t("modules.eyebrow")}</div>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">{t("modules.title")}</h2>
+            <div className="text-xs font-semibold uppercase tracking-widest text-primary-glow">
+              {t("modules.eyebrow")}
+            </div>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">
+              {t("modules.title")}
+            </h2>
           </div>
           <p className="max-w-md text-base text-muted-foreground">{t("modules.subtitle")}</p>
         </div>
@@ -34,8 +38,12 @@ export function Modules() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[image:var(--gradient-hero)] text-primary-foreground">
                   <m.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-5 text-lg font-semibold tracking-tight">{t(`modules.items.${m.k}.t`)}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(`modules.items.${m.k}.d`)}</p>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight">
+                  {t(`modules.items.${m.k}.t`)}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {t(`modules.items.${m.k}.d`)}
+                </p>
               </div>
             </div>
           ))}

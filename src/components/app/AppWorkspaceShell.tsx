@@ -1,12 +1,12 @@
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
   Bell,
   Building2,
   ChevronDown,
   CircleHelp,
   Factory,
-  Globe2,
   LogOut,
   Menu,
   Search,
@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,12 +45,16 @@ export function AppWorkspaceShell({
   onModeChange?: (mode: WorkspaceMode) => void;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, company, membership, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const navItems = mode === "buyer" ? buyerNavItems : supplierNavItems;
   const displayName =
-    user?.user_metadata.full_name || user?.email?.split("@")[0] || user?.phone || "Account";
+    user?.user_metadata.full_name ||
+    user?.email?.split("@")[0] ||
+    user?.phone ||
+    t("workspace.shell.account");
 
   async function handleSignOut() {
     await signOut();
@@ -69,13 +74,15 @@ export function AppWorkspaceShell({
         </div>
         <div>
           <p className="text-base font-bold tracking-tight">ProcureGrid</p>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-white/45">{mode} workspace</p>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-white/45">
+            {t(`workspace.shell.${mode}Workspace`)}
+          </p>
         </div>
         <button
           className="ml-auto rounded-md p-1.5 text-white/70 hover:bg-white/10 lg:hidden"
           onClick={() => setMobileOpen(false)}
           type="button"
-          aria-label="Close navigation"
+          aria-label={t("workspace.shell.closeNavigation")}
         >
           <X className="h-5 w-5" />
         </button>
@@ -99,7 +106,7 @@ export function AppWorkspaceShell({
               )}
             >
               <Icon className={cn("h-4 w-4", selected && "text-[#f2b84b]")} />
-              <span className="min-w-0 flex-1 truncate">{item.label}</span>
+              <span className="min-w-0 flex-1 truncate">{t(item.labelKey)}</span>
               {item.badge ? (
                 <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/70">
                   {item.badge}
@@ -116,7 +123,7 @@ export function AppWorkspaceShell({
           type="button"
         >
           <CircleHelp className="h-4 w-4" />
-          Help & Support
+          {t("workspace.shell.helpSupport")}
         </button>
       </div>
     </div>
@@ -131,7 +138,7 @@ export function AppWorkspaceShell({
           <button
             type="button"
             className="absolute inset-0 bg-[#071d35]/45 backdrop-blur-sm"
-            aria-label="Close navigation overlay"
+            aria-label={t("workspace.shell.closeNavigation")}
             onClick={() => setMobileOpen(false)}
           />
           <aside className="relative h-full w-[min(19rem,88vw)] shadow-2xl">{sidebar}</aside>
@@ -144,14 +151,16 @@ export function AppWorkspaceShell({
             type="button"
             className="rounded-lg border border-[#dce4ee] p-2 text-[#38506c] lg:hidden"
             onClick={() => setMobileOpen(true)}
-            aria-label="Open navigation"
+            aria-label={t("workspace.shell.openNavigation")}
           >
             <Menu className="h-5 w-5" />
           </button>
 
           <div className="hidden items-center gap-2 rounded-lg border border-[#dce4ee] bg-[#f8fafc] px-3 py-2 text-xs font-medium text-[#4f6279] sm:flex">
             <Building2 className="h-4 w-4 text-[#1d5b91]" />
-            <span className="max-w-32 truncate">{company?.name ?? "Company"}</span>
+            <span className="max-w-32 truncate">
+              {company?.name ?? t("workspace.shell.company")}
+            </span>
             <ChevronDown className="h-3.5 w-3.5 text-[#8290a2]" />
           </div>
 
@@ -161,8 +170,8 @@ export function AppWorkspaceShell({
               className="h-10 w-full rounded-lg border border-[#dce4ee] bg-[#f8fafc] pl-10 pr-4 text-sm outline-none transition placeholder:text-[#9aa8b8] focus:border-[#1d5b91] focus:bg-white focus:ring-3 focus:ring-[#1d5b91]/10"
               placeholder={
                 mode === "buyer"
-                  ? "Search RFQs, suppliers, POs, invoices..."
-                  : "Search RFQs, orders, products, buyers..."
+                  ? t("workspace.shell.searchBuyer")
+                  : t("workspace.shell.searchSupplier")
               }
             />
           </div>
@@ -181,24 +190,20 @@ export function AppWorkspaceShell({
                       : "text-[#6b7d90] hover:text-[#0b3158]",
                   )}
                 >
-                  {workspace}
+                  {t(`workspace.shell.${workspace}`)}
                 </button>
               ))}
             </div>
           ) : null}
 
-          <button
-            type="button"
-            className="hidden items-center gap-2 rounded-lg px-2 py-2 text-sm text-[#41566d] hover:bg-[#f1f5f9] sm:flex"
-          >
-            <Globe2 className="h-4 w-4" />
-            EN
-          </button>
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
 
           <button
             type="button"
             className="relative rounded-lg p-2 text-[#41566d] hover:bg-[#f1f5f9]"
-            aria-label="Notifications"
+            aria-label={t("workspace.shell.notifications")}
           >
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#e9a72d] ring-2 ring-white" />
@@ -215,7 +220,9 @@ export function AppWorkspaceShell({
                     {displayName}
                   </p>
                   <p className="text-[10px] capitalize text-[#78889a]">
-                    {membership?.role?.replaceAll("_", " ") ?? `${mode} account`}
+                    {membership?.role
+                      ? t(`workspace.roles.${membership.role}`)
+                      : t(`workspace.shell.${mode}Account`)}
                   </p>
                 </div>
                 <ChevronDown className="hidden h-3.5 w-3.5 text-[#8795a7] sm:block" />
@@ -231,12 +238,12 @@ export function AppWorkspaceShell({
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={() => onSectionChange("settings")}>
                 <Settings2 className="h-4 w-4" />
-                Workspace settings
+                {t("workspace.shell.workspaceSettings")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={() => void handleSignOut()} className="text-destructive">
                 <LogOut className="h-4 w-4" />
-                Sign out
+                {t("common.signOut")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

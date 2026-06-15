@@ -16,7 +16,7 @@ export const Route = createFileRoute("/verify-phone")({
   validateSearch: (search: Record<string, unknown>) => ({
     phone: typeof search.phone === "string" ? search.phone : "",
     fullName: typeof search.fullName === "string" ? search.fullName : "",
-    mode: search.mode === "login" ? "login" : "signup",
+    mode: search.mode === "login" ? ("login" as const) : ("signup" as const),
   }),
   component: VerifyPhonePage,
 });
@@ -91,7 +91,7 @@ function VerifyPhonePage() {
         const { error: profileError } = await upsertProfileForUser(nextState.user, {
           fullName: fullName || nextState.user.user_metadata.full_name || null,
           authIdentifierType: "phone",
-          contactEmail: nextState.user.email ?? null,
+          contactEmail: null,
           contactPhoneE164: normalizedPhone,
         });
 
@@ -192,7 +192,9 @@ function VerifyPhonePage() {
                   className="font-medium text-foreground underline underline-offset-4"
                   to={mode === "login" ? "/login" : "/signup"}
                 >
-                  {mode === "login" ? "Back to sign in" : t("authPages.verifyPhone.backToSignup")}
+                  {mode === "login"
+                    ? t("authPages.verifyPhone.backToLogin", { defaultValue: "Back to sign in" })
+                    : t("authPages.verifyPhone.backToSignup")}
                 </Link>
               </p>
             </CardContent>

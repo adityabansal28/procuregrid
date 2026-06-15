@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Settings2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ProtectedPlaceholderPage } from "@/components/app/ProtectedPlaceholderPage";
 
 export const Route = createFileRoute("/settings")({
@@ -7,10 +8,12 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
+  const { t } = useTranslation();
+
   return (
     <ProtectedPlaceholderPage
-      title="Settings"
-      description="Manage account and workspace-level configuration."
+      title={t("workspace.pages.settings.title")}
+      description={t("workspace.pages.settings.description")}
       icon={Settings2}
     />
   );

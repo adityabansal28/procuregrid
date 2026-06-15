@@ -38,7 +38,10 @@ export function Hero() {
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" className="bg-accent text-accent-foreground shadow-[var(--shadow-lg)] hover:bg-accent/90">
+            <Button
+              size="lg"
+              className="bg-accent text-accent-foreground shadow-[var(--shadow-lg)] hover:bg-accent/90"
+            >
               {t("hero.startSourcing")}
               <ArrowRight className="ml-1 h-4 w-4" />
             </Button>

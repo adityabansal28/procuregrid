@@ -27,16 +27,20 @@ ProcureGrid should be positioned as:
 
 Early product work should stay focused on:
 
-- Supplier onboarding and verification
-- RFQ to PO workflow
-- GRN and invoice tracking
-- Escrow state tracking
-- Role-based dashboards
-- Auditability and tenant isolation
+- Supplier onboarding, approval, and verification
+- Buyer RFQ creation and admin review
+- Approved supplier assignment
+- Supplier quotation submission
+- Buyer quotation comparison and selection
+- Role-based access, auditability, and tenant isolation
 
 Avoid in the MVP:
 
 - Full ERP breadth
+- Accounting, inventory, logistics, payments, escrow, or credit workflows
 - Premature microservice complexity
 - Lending functionality
+- Automated GST verification
+- AI supplier matching or quotation scoring
+- Public supplier marketplace search
 - Heavy AI scope before workflow correctness

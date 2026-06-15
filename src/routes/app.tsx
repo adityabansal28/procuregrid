@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { AppWorkspaceShell } from "@/components/app/AppWorkspaceShell";
 import { BuyerWorkspace } from "@/components/app/BuyerWorkspace";
 import { SupplierWorkspace } from "@/components/app/SupplierWorkspace";
@@ -12,13 +13,17 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppHomePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, company, loading } = useAuth();
   const initialMode: WorkspaceMode = company?.company_type === "supplier" ? "supplier" : "buyer";
   const [mode, setMode] = useState<WorkspaceMode>(initialMode);
   const [activeSection, setActiveSection] = useState("dashboard");
   const displayName =
-    user?.user_metadata.full_name || user?.email?.split("@")[0] || user?.phone || "Account";
+    user?.user_metadata.full_name ||
+    user?.email?.split("@")[0] ||
+    user?.phone ||
+    t("workspace.shell.account");
 
   useEffect(() => {
     if (loading) return;
@@ -47,7 +52,7 @@ function AppHomePage() {
       <div className="flex min-h-screen items-center justify-center bg-[#f4f7fb]">
         <div className="flex items-center gap-3 rounded-xl border border-[#dfe6ef] bg-white px-5 py-4 text-sm text-[#65758a] shadow-sm">
           <LoaderCircle className="h-5 w-5 animate-spin text-[#1d5b91]" />
-          Preparing your workspace...
+          {t("workspace.shell.preparing", { defaultValue: "Preparing your workspace..." })}
         </div>
       </div>
     );

@@ -32,18 +32,30 @@ export function Footer() {
               <div className="text-sm font-semibold">{c.h}</div>
               <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                 {c.l.map((x) => (
-                  <li key={x}><a href="#" className="hover:text-foreground">{x}</a></li>
+                  <li key={x}>
+                    <a href="#" className="hover:text-foreground">
+                      {x}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
-          <div>© {new Date().getFullYear()} {t("footer.rights")}</div>
+          <div>
+            © {new Date().getFullYear()} {t("footer.rights")}
+          </div>
           <div className="flex gap-5">
-            <a href="#" className="hover:text-foreground">{t("footer.privacy")}</a>
-            <a href="#" className="hover:text-foreground">{t("footer.terms")}</a>
-            <a href="#" className="hover:text-foreground">{t("footer.security")}</a>
+            <a href="#" className="hover:text-foreground">
+              {t("footer.privacy")}
+            </a>
+            <a href="#" className="hover:text-foreground">
+              {t("footer.terms")}
+            </a>
+            <a href="#" className="hover:text-foreground">
+              {t("footer.security")}
+            </a>
           </div>
         </div>
       </div>

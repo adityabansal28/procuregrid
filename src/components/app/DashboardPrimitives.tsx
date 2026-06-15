@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight, MoreHorizontal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 export function DashboardPanel({
@@ -99,6 +100,8 @@ export function StatusPill({
 }
 
 export function DataTable({ columns, rows }: { columns: string[]; rows: Array<Array<ReactNode>> }) {
+  const { t } = useTranslation();
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[680px] text-left">
@@ -136,7 +139,7 @@ export function DataTable({ columns, rows }: { columns: string[]; rows: Array<Ar
                 <button
                   type="button"
                   className="rounded-md p-1 text-[#8492a3] hover:bg-[#edf2f7] hover:text-[#344a62]"
-                  aria-label="Open row actions"
+                  aria-label={t("workspace.common.openRowActions")}
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </button>
@@ -160,22 +163,31 @@ export function EmptyModule({
   accent: "buyer" | "supplier";
   children?: ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#718197]">
-          {accent} workspace
+          {t(`workspace.shell.${accent}Workspace`)}
         </p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#12263e] md:text-3xl">
           {title}
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-[#6b7c90]">{description}</p>
       </div>
-      <DashboardPanel title="Frontend preview" action="Coming next">
+      <DashboardPanel
+        title={t("workspace.placeholder.preview")}
+        action={t("workspace.placeholder.comingNext")}
+      >
         <div className="grid gap-4 p-5 md:grid-cols-3">
           {children ?? (
             <>
-              {["Overview", "Pending work", "Recent activity"].map((item, index) => (
+              {[
+                t("workspace.placeholder.overview"),
+                t("workspace.placeholder.pendingWork"),
+                t("workspace.placeholder.recentActivity"),
+              ].map((item, index) => (
                 <div
                   key={item}
                   className="rounded-xl border border-dashed border-[#ced9e5] bg-[#f8fafc] p-5"

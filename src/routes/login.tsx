@@ -81,18 +81,16 @@ function LoginPage() {
     let shouldClearStage = false;
 
     try {
-      const parsedIdentifier =
-        accountMethod === "email"
-          ? parseIdentifierByType("email", identifier)
-          : (() => {
-              const result = buildE164PhoneNumber(getPhoneCountry(phoneCountry), identifier);
-              return "value" in result ? { type: "phone" as const, value: result.value } : result;
-            })();
+      let parsedIdentifier = parseIdentifierByType("email", identifier);
 
-      if (accountMethod === "phone" && parsedIdentifier && "error" in parsedIdentifier) {
-        setError(parsedIdentifier.error);
-        shouldClearStage = true;
-        return;
+      if (accountMethod === "phone") {
+        const phoneResult = buildE164PhoneNumber(getPhoneCountry(phoneCountry), identifier);
+        if (!phoneResult.value) {
+          setError(phoneResult.error ?? t("authPages.login.invalidIdentifier"));
+          shouldClearStage = true;
+          return;
+        }
+        parsedIdentifier = { type: "phone", value: phoneResult.value };
       }
 
       if (!parsedIdentifier) {
@@ -135,6 +133,7 @@ function LoginPage() {
           to: "/verify-phone",
           search: {
             phone: parsedIdentifier.value,
+            fullName: "",
             mode: "login",
           },
           replace: true,

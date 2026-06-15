@@ -78,7 +78,7 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">
-                  Account
+                  {t("workspace.shell.account")}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -86,19 +86,19 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings2 className="h-4 w-4" />
-                    Settings
+                    {t("workspace.pages.settings.title")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/preferences">
                     <SlidersHorizontal className="h-4 w-4" />
-                    Preferences
+                    {t("workspace.pages.preferences.title")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/statistics">
                     <BarChart3 className="h-4 w-4" />
-                    Statistics
+                    {t("workspace.pages.statistics.title")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

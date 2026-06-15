@@ -21,139 +21,136 @@ export type WorkspaceMode = "buyer" | "supplier";
 
 export type WorkspaceNavItem = {
   id: string;
-  label: string;
+  labelKey: string;
   icon: typeof LayoutDashboard;
   badge?: string;
 };
 
 export const buyerNavItems: WorkspaceNavItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "requests", label: "Purchase Requests", icon: ClipboardCheck, badge: "4" },
-  { id: "rfqs", label: "RFQs", icon: FileInput, badge: "12" },
-  { id: "quotes", label: "Quotes", icon: FileText, badge: "35" },
-  { id: "orders", label: "Purchase Orders", icon: ShoppingCart, badge: "18" },
-  { id: "shipments", label: "Shipments", icon: Truck, badge: "7" },
-  { id: "grn", label: "GRN", icon: PackageCheck },
-  { id: "invoices", label: "Invoices", icon: ReceiptText, badge: "24" },
-  { id: "payments", label: "Payments", icon: WalletCards },
-  { id: "suppliers", label: "Suppliers", icon: Users },
-  { id: "catalog", label: "Catalog", icon: Boxes },
-  { id: "analytics", label: "Reports & Analytics", icon: BarChart3 },
-  { id: "settings", label: "Settings", icon: Settings2 },
+  { id: "dashboard", labelKey: "workspace.nav.dashboard", icon: LayoutDashboard },
+  { id: "requests", labelKey: "workspace.nav.purchaseRequests", icon: ClipboardCheck, badge: "4" },
+  { id: "rfqs", labelKey: "workspace.nav.rfqs", icon: FileInput, badge: "12" },
+  { id: "quotes", labelKey: "workspace.nav.quotes", icon: FileText, badge: "35" },
+  { id: "orders", labelKey: "workspace.nav.purchaseOrders", icon: ShoppingCart, badge: "18" },
+  { id: "shipments", labelKey: "workspace.nav.shipments", icon: Truck, badge: "7" },
+  { id: "grn", labelKey: "workspace.nav.grn", icon: PackageCheck },
+  { id: "invoices", labelKey: "workspace.nav.invoices", icon: ReceiptText, badge: "24" },
+  { id: "payments", labelKey: "workspace.nav.payments", icon: WalletCards },
+  { id: "suppliers", labelKey: "workspace.nav.suppliers", icon: Users },
+  { id: "catalog", labelKey: "workspace.nav.catalog", icon: Boxes },
+  { id: "analytics", labelKey: "workspace.nav.reports", icon: BarChart3 },
+  { id: "settings", labelKey: "workspace.nav.settings", icon: Settings2 },
 ];
 
 export const supplierNavItems: WorkspaceNavItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "opportunities", label: "RFQ Opportunities", icon: FileInput, badge: "9" },
-  { id: "quotes", label: "My Quotes", icon: FileText, badge: "6" },
-  { id: "orders", label: "Sales Orders", icon: ShoppingCart, badge: "11" },
-  { id: "shipments", label: "Shipments", icon: Truck, badge: "5" },
-  { id: "deliveries", label: "Delivery & GRN", icon: PackageCheck },
-  { id: "invoices", label: "Invoices", icon: ReceiptText, badge: "3" },
-  { id: "payments", label: "Payments", icon: CreditCard },
-  { id: "catalog", label: "Product Catalog", icon: Store },
-  { id: "compliance", label: "Compliance", icon: FileCheck2 },
-  { id: "analytics", label: "Performance", icon: BarChart3 },
-  { id: "settings", label: "Settings", icon: Settings2 },
+  { id: "dashboard", labelKey: "workspace.nav.dashboard", icon: LayoutDashboard },
+  { id: "opportunities", labelKey: "workspace.nav.opportunities", icon: FileInput, badge: "9" },
+  { id: "quotes", labelKey: "workspace.nav.myQuotes", icon: FileText, badge: "6" },
+  { id: "orders", labelKey: "workspace.nav.salesOrders", icon: ShoppingCart, badge: "11" },
+  { id: "shipments", labelKey: "workspace.nav.shipments", icon: Truck, badge: "5" },
+  { id: "deliveries", labelKey: "workspace.nav.deliveryGrn", icon: PackageCheck },
+  { id: "invoices", labelKey: "workspace.nav.invoices", icon: ReceiptText, badge: "3" },
+  { id: "payments", labelKey: "workspace.nav.payments", icon: CreditCard },
+  { id: "catalog", labelKey: "workspace.nav.productCatalog", icon: Store },
+  { id: "compliance", labelKey: "workspace.nav.compliance", icon: FileCheck2 },
+  { id: "analytics", labelKey: "workspace.nav.performance", icon: BarChart3 },
+  { id: "settings", labelKey: "workspace.nav.settings", icon: Settings2 },
 ];
 
-export const buyerSectionCopy: Record<string, { title: string; description: string }> = {
+export const buyerSectionCopy: Record<string, { titleKey: string; descriptionKey: string }> = {
   requests: {
-    title: "Purchase Requests",
-    description:
-      "Capture internal demand, route approvals, and convert approved requests into RFQs.",
+    titleKey: "workspace.sections.buyer.requests.title",
+    descriptionKey: "workspace.sections.buyer.requests.description",
   },
   rfqs: {
-    title: "Requests for Quotation",
-    description:
-      "Create sourcing events, invite verified suppliers, and monitor response progress.",
+    titleKey: "workspace.sections.buyer.rfqs.title",
+    descriptionKey: "workspace.sections.buyer.rfqs.description",
   },
   quotes: {
-    title: "Quote Comparison",
-    description: "Compare pricing, lead time, commercial terms, and supplier trust signals.",
+    titleKey: "workspace.sections.buyer.quotes.title",
+    descriptionKey: "workspace.sections.buyer.quotes.description",
   },
   orders: {
-    title: "Purchase Orders",
-    description: "Track issued orders from supplier acceptance through final closure.",
+    titleKey: "workspace.sections.buyer.orders.title",
+    descriptionKey: "workspace.sections.buyer.orders.description",
   },
   shipments: {
-    title: "Inbound Shipments",
-    description: "Monitor dispatches, expected arrivals, and delayed deliveries.",
+    titleKey: "workspace.sections.buyer.shipments.title",
+    descriptionKey: "workspace.sections.buyer.shipments.description",
   },
   grn: {
-    title: "Goods Receipt Notes",
-    description: "Record received quantities, quality checks, shortages, and exceptions.",
+    titleKey: "workspace.sections.buyer.grn.title",
+    descriptionKey: "workspace.sections.buyer.grn.description",
   },
   invoices: {
-    title: "Invoice Review",
-    description: "Match invoices against purchase orders and goods receipts before approval.",
+    titleKey: "workspace.sections.buyer.invoices.title",
+    descriptionKey: "workspace.sections.buyer.invoices.description",
   },
   payments: {
-    title: "Payments",
-    description: "Follow payable, protected, released, and disputed payment states.",
+    titleKey: "workspace.sections.buyer.payments.title",
+    descriptionKey: "workspace.sections.buyer.payments.description",
   },
   suppliers: {
-    title: "Supplier Network",
-    description: "Invite suppliers, review verification status, and track performance.",
+    titleKey: "workspace.sections.buyer.suppliers.title",
+    descriptionKey: "workspace.sections.buyer.suppliers.description",
   },
   catalog: {
-    title: "Procurement Catalog",
-    description: "Organize approved products, specifications, and preferred supplier options.",
+    titleKey: "workspace.sections.buyer.catalog.title",
+    descriptionKey: "workspace.sections.buyer.catalog.description",
   },
   analytics: {
-    title: "Reports & Analytics",
-    description: "Explore spend, supplier concentration, RFQ conversion, and delivery performance.",
+    titleKey: "workspace.sections.buyer.analytics.title",
+    descriptionKey: "workspace.sections.buyer.analytics.description",
   },
   settings: {
-    title: "Buyer Workspace Settings",
-    description: "Manage team access, approval rules, notifications, and company preferences.",
+    titleKey: "workspace.sections.buyer.settings.title",
+    descriptionKey: "workspace.sections.buyer.settings.description",
   },
 };
 
-export const supplierSectionCopy: Record<string, { title: string; description: string }> = {
+export const supplierSectionCopy: Record<string, { titleKey: string; descriptionKey: string }> = {
   opportunities: {
-    title: "RFQ Opportunities",
-    description:
-      "Review buyer requirements, deadlines, specifications, and qualification criteria.",
+    titleKey: "workspace.sections.supplier.opportunities.title",
+    descriptionKey: "workspace.sections.supplier.opportunities.description",
   },
   quotes: {
-    title: "My Quotes",
-    description: "Draft, submit, revise, and track commercial offers sent to buyers.",
+    titleKey: "workspace.sections.supplier.quotes.title",
+    descriptionKey: "workspace.sections.supplier.quotes.description",
   },
   orders: {
-    title: "Sales Orders",
-    description: "Manage accepted purchase orders and fulfilment commitments.",
+    titleKey: "workspace.sections.supplier.orders.title",
+    descriptionKey: "workspace.sections.supplier.orders.description",
   },
   shipments: {
-    title: "Outbound Shipments",
-    description: "Create dispatch records and keep buyers informed about delivery progress.",
+    titleKey: "workspace.sections.supplier.shipments.title",
+    descriptionKey: "workspace.sections.supplier.shipments.description",
   },
   deliveries: {
-    title: "Delivery & GRN",
-    description: "Track buyer receipts, accepted quantities, quality outcomes, and disputes.",
+    titleKey: "workspace.sections.supplier.deliveries.title",
+    descriptionKey: "workspace.sections.supplier.deliveries.description",
   },
   invoices: {
-    title: "Invoices",
-    description: "Submit invoices against delivered orders and follow approval status.",
+    titleKey: "workspace.sections.supplier.invoices.title",
+    descriptionKey: "workspace.sections.supplier.invoices.description",
   },
   payments: {
-    title: "Payments",
-    description: "See protected amounts, upcoming receivables, releases, and exceptions.",
+    titleKey: "workspace.sections.supplier.payments.title",
+    descriptionKey: "workspace.sections.supplier.payments.description",
   },
   catalog: {
-    title: "Product Catalog",
-    description: "Maintain products, capabilities, minimum order quantities, and lead times.",
+    titleKey: "workspace.sections.supplier.catalog.title",
+    descriptionKey: "workspace.sections.supplier.catalog.description",
   },
   compliance: {
-    title: "Compliance",
-    description: "Manage GST, PAN, certifications, verification evidence, and expiry dates.",
+    titleKey: "workspace.sections.supplier.compliance.title",
+    descriptionKey: "workspace.sections.supplier.compliance.description",
   },
   analytics: {
-    title: "Supplier Performance",
-    description: "Review win rate, revenue, delivery reliability, quality, and buyer engagement.",
+    titleKey: "workspace.sections.supplier.analytics.title",
+    descriptionKey: "workspace.sections.supplier.analytics.description",
   },
   settings: {
-    title: "Supplier Workspace Settings",
-    description: "Manage company profile, notifications, payment details, and account preferences.",
+    titleKey: "workspace.sections.supplier.settings.title",
+    descriptionKey: "workspace.sections.supplier.settings.description",
   },
 };

@@ -17,7 +17,11 @@ export function CTA() {
                 {t("cta.bookDemo")}
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" className="border-white/25 bg-white/5 text-white backdrop-blur hover:bg-white/10 hover:text-white">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/25 bg-white/5 text-white backdrop-blur hover:bg-white/10 hover:text-white"
+              >
                 {t("cta.talkSales")}
               </Button>
             </div>

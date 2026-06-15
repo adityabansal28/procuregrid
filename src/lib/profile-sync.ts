@@ -3,25 +3,27 @@ import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 export async function upsertProfileForUser(
   user: User,
-  {
-    fullName,
-    authIdentifierType,
-    contactEmail,
-    contactPhoneE164,
-  }: {
-    fullName: string | null;
-    authIdentifierType: "email" | "phone";
-    contactEmail: string | null;
-    contactPhoneE164: string | null;
-  },
+  profile:
+    | {
+        fullName: string | null;
+        authIdentifierType: "email";
+        contactEmail: string;
+        contactPhoneE164: null;
+      }
+    | {
+        fullName: string | null;
+        authIdentifierType: "phone";
+        contactEmail: null;
+        contactPhoneE164: string;
+      },
 ) {
   const supabase = getSupabaseBrowserClient();
 
   return supabase.from("profiles").upsert({
     id: user.id,
-    full_name: fullName,
-    auth_identifier_type: authIdentifierType,
-    contact_email: contactEmail,
-    contact_phone_e164: contactPhoneE164,
+    full_name: profile.fullName,
+    auth_identifier_type: profile.authIdentifierType,
+    contact_email: profile.contactEmail,
+    contact_phone_e164: profile.contactPhoneE164,
   });
 }

@@ -13,9 +13,7 @@ function cleanPhoneNumber(raw: string) {
 
   if (!trimmed) return "";
 
-  const normalized = trimmed
-    .replace(/[\s()-]/g, "")
-    .replace(/^00/, "+");
+  const normalized = trimmed.replace(/[\s()-]/g, "").replace(/^00/, "+");
 
   return normalized;
 }
@@ -72,7 +70,10 @@ export function isEmailIdentifier(raw: string) {
   return EMAIL_REGEX.test(normalizeEmail(raw));
 }
 
-export function parseIdentifierByType(type: AuthIdentifierType, raw: string): ParsedAuthIdentifier | null {
+export function parseIdentifierByType(
+  type: AuthIdentifierType,
+  raw: string,
+): ParsedAuthIdentifier | null {
   if (type === "email") {
     const normalized = normalizeEmail(raw);
     return EMAIL_REGEX.test(normalized) ? { type, value: normalized } : null;

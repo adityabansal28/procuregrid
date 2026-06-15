@@ -44,11 +44,11 @@ function normalizeCompany(company: MembershipRecord["company"]): CompanyRecord |
   return Array.isArray(company) ? (company[0] ?? null) : company;
 }
 
-function withTimeout<T>(promise: Promise<T>, ms: number, message: string) {
+function withTimeout<T>(promise: PromiseLike<T>, ms: number, message: string) {
   return new Promise<T>((resolve, reject) => {
     const timeoutId = window.setTimeout(() => reject(new Error(message)), ms);
 
-    promise
+    Promise.resolve(promise)
       .then((value) => {
         window.clearTimeout(timeoutId);
         resolve(value);

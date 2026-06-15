@@ -11,6 +11,7 @@ import {
   Truck,
   UserPlus,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DashboardPanel,
   DataTable,
@@ -20,58 +21,12 @@ import {
 } from "@/components/app/DashboardPrimitives";
 import { buyerSectionCopy } from "@/components/app/workspace-data";
 
-const recentRfqs = [
-  [
-    "RFQ-00024",
-    "Stainless Steel Sheets",
-    "Raw Materials",
-    "12 suppliers",
-    "2",
-    <StatusPill key="sent">Sent</StatusPill>,
-    "03 Jun 2026",
-  ],
-  [
-    "RFQ-00023",
-    "Bearing Assemblies",
-    "Components",
-    "8 suppliers",
-    "1",
-    <StatusPill key="review" tone="amber">
-      Under review
-    </StatusPill>,
-    "02 Jun 2026",
-  ],
-  [
-    "RFQ-00022",
-    "Hydraulic Cylinders",
-    "Machinery",
-    "10 suppliers",
-    "3",
-    <StatusPill key="sent">Sent</StatusPill>,
-    "01 Jun 2026",
-  ],
-  [
-    "RFQ-00021",
-    "Allen Bolts & Nuts",
-    "Fasteners",
-    "15 suppliers",
-    "3",
-    <StatusPill key="review" tone="amber">
-      Under review
-    </StatusPill>,
-    "31 May 2026",
-  ],
-  [
-    "RFQ-00020",
-    "Packaging Materials",
-    "Packaging",
-    "6 suppliers",
-    "0",
-    <StatusPill key="draft" tone="slate">
-      Draft
-    </StatusPill>,
-    "30 May 2026",
-  ],
+const recentRfqData = [
+  ["RFQ-00024", "Stainless Steel Sheets", "Raw Materials", "12", "2", "sent", "03 Jun 2026"],
+  ["RFQ-00023", "Bearing Assemblies", "Components", "8", "1", "review", "02 Jun 2026"],
+  ["RFQ-00022", "Hydraulic Cylinders", "Machinery", "10", "3", "sent", "01 Jun 2026"],
+  ["RFQ-00021", "Allen Bolts & Nuts", "Fasteners", "15", "3", "review", "31 May 2026"],
+  ["RFQ-00020", "Packaging Materials", "Packaging", "6", "0", "draft", "30 May 2026"],
 ];
 
 export function BuyerWorkspace({
@@ -83,29 +38,49 @@ export function BuyerWorkspace({
   onSectionChange: (section: string) => void;
   displayName: string;
 }) {
+  const { t } = useTranslation();
+
   if (activeSection !== "dashboard") {
     const section = buyerSectionCopy[activeSection] ?? {
-      title: "Buyer Workspace",
-      description: "This buyer module is ready for backend integration.",
+      titleKey: "workspace.sections.buyer.default.title",
+      descriptionKey: "workspace.sections.buyer.default.description",
     };
-    return <EmptyModule title={section.title} description={section.description} accent="buyer" />;
+    return (
+      <EmptyModule
+        title={t(section.titleKey)}
+        description={t(section.descriptionKey)}
+        accent="buyer"
+      />
+    );
   }
 
   const firstName = displayName.split(" ")[0] || "there";
+  const recentRfqs = recentRfqData.map(([id, title, category, sentTo, quotes, status, date]) => [
+    id,
+    title,
+    category,
+    t("workspace.buyer.table.suppliersCount", { count: sentTo }),
+    quotes,
+    <StatusPill
+      key={`${id}-${status}`}
+      tone={status === "review" ? "amber" : status === "draft" ? "slate" : "blue"}
+    >
+      {t(`workspace.status.${status}`)}
+    </StatusPill>,
+    date,
+  ]);
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#6e8095]">
-            Buyer command center
+            {t("workspace.buyer.eyebrow")}
           </p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#13263d] md:text-3xl">
-            Welcome back, {firstName}
+            {t("workspace.buyer.welcome", { name: firstName })}
           </h1>
-          <p className="mt-1 text-sm text-[#718197]">
-            Here is what is moving through your procurement pipeline today.
-          </p>
+          <p className="mt-1 text-sm text-[#718197]">{t("workspace.buyer.subtitle")}</p>
         </div>
         <button
           type="button"
@@ -113,47 +88,47 @@ export function BuyerWorkspace({
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0b3158] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#123f6e]"
         >
           <Plus className="h-4 w-4" />
-          Create RFQ
+          {t("workspace.buyer.createRfq")}
         </button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <MetricCard
-          label="Active RFQs"
+          label={t("workspace.buyer.metrics.activeRfqs")}
           value="12"
-          delta="+20% vs last 30 days"
+          delta={t("workspace.buyer.metrics.activeRfqsDelta")}
           icon={<FileInput className="h-5 w-5" />}
         />
         <MetricCard
-          label="Pending Quotes"
+          label={t("workspace.buyer.metrics.pendingQuotes")}
           value="35"
-          delta="+18% vs last 30 days"
+          delta={t("workspace.buyer.metrics.pendingQuotesDelta")}
           icon={<FileText className="h-5 w-5" />}
         />
         <MetricCard
-          label="Open POs"
+          label={t("workspace.buyer.metrics.openPos")}
           value="18"
-          delta="+5% vs last 30 days"
+          delta={t("workspace.buyer.metrics.openPosDelta")}
           icon={<ShoppingCart className="h-5 w-5" />}
           tone="green"
         />
         <MetricCard
-          label="Pending Invoices"
+          label={t("workspace.buyer.metrics.pendingInvoices")}
           value="24"
-          delta="+12% vs last 30 days"
+          delta={t("workspace.buyer.metrics.pendingInvoicesDelta")}
           icon={<ReceiptText className="h-5 w-5" />}
           tone="amber"
         />
         <MetricCard
-          label="Spend This Month"
+          label={t("workspace.buyer.metrics.monthlySpend")}
           value="₹48.6L"
-          delta="+22% vs last 30 days"
+          delta={t("workspace.buyer.metrics.monthlySpendDelta")}
           icon={<IndianRupee className="h-5 w-5" />}
         />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr_0.85fr]">
-        <DashboardPanel title="RFQ Overview">
+        <DashboardPanel title={t("workspace.buyer.rfqOverview")}>
           <div className="flex flex-col items-center gap-6 p-5 sm:flex-row">
             <div
               className="relative grid h-40 w-40 shrink-0 place-items-center rounded-full"
@@ -165,16 +140,16 @@ export function BuyerWorkspace({
               <div className="grid h-24 w-24 place-items-center rounded-full bg-white text-center">
                 <div>
                   <p className="text-2xl font-bold text-[#13263d]">28</p>
-                  <p className="text-[10px] text-[#7b8b9d]">Total RFQs</p>
+                  <p className="text-[10px] text-[#7b8b9d]">{t("workspace.buyer.totalRfqs")}</p>
                 </div>
               </div>
             </div>
             <div className="w-full space-y-3">
               {[
-                ["Draft", "5", "#d6e8f7"],
-                ["Sent", "12", "#1f5e97"],
-                ["Under review", "6", "#82b6e7"],
-                ["Closed", "5", "#4d8bc5"],
+                [t("workspace.status.draft"), "5", "#d6e8f7"],
+                [t("workspace.status.sent"), "12", "#1f5e97"],
+                [t("workspace.status.review"), "6", "#82b6e7"],
+                [t("workspace.status.closed"), "5", "#4d8bc5"],
               ].map(([label, value, color]) => (
                 <div key={label} className="flex items-center gap-3 text-xs">
                   <span className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: color }} />
@@ -186,13 +161,28 @@ export function BuyerWorkspace({
           </div>
         </DashboardPanel>
 
-        <DashboardPanel title="Recent Activity" action="View all">
+        <DashboardPanel
+          title={t("workspace.buyer.recentActivity")}
+          action={t("workspace.common.viewAll")}
+        >
           <div className="divide-y divide-[#edf1f5]">
             {[
-              [FileInput, "RFQ-00024 was created", "By you · 2h ago"],
-              [FileText, "3 new quotes received for RFQ-00021", "Precision Parts · 4h ago"],
-              [ShoppingCart, "PO-00018 confirmed by supplier", "Industrial Components · 1d ago"],
-              [ReceiptText, "Invoice INV-00045 needs approval", "Assigned to you · 2d ago"],
+              [
+                FileInput,
+                t("workspace.buyer.activity.rfqCreated"),
+                t("workspace.buyer.activity.byYou"),
+              ],
+              [FileText, t("workspace.buyer.activity.quotesReceived"), "Precision Parts · 4h"],
+              [
+                ShoppingCart,
+                t("workspace.buyer.activity.poConfirmed"),
+                "Industrial Components · 1d",
+              ],
+              [
+                ReceiptText,
+                t("workspace.buyer.activity.invoiceApproval"),
+                t("workspace.buyer.activity.assigned"),
+              ],
             ].map(([Icon, title, meta]) => {
               const ActivityIcon = Icon as typeof FileInput;
               return (
@@ -217,7 +207,10 @@ export function BuyerWorkspace({
           </div>
         </DashboardPanel>
 
-        <DashboardPanel title="Top Suppliers by Spend" action="View all">
+        <DashboardPanel
+          title={t("workspace.buyer.topSuppliers")}
+          action={t("workspace.common.viewAll")}
+        >
           <div className="divide-y divide-[#edf1f5] px-5">
             {[
               ["Precision Parts Pvt. Ltd.", "₹18.6L"],
@@ -239,22 +232,63 @@ export function BuyerWorkspace({
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_19rem]">
-        <DashboardPanel title="Recent RFQs" action="View all RFQs">
+        <DashboardPanel
+          title={t("workspace.buyer.recentRfqs")}
+          action={t("workspace.buyer.viewAllRfqs")}
+        >
           <DataTable
-            columns={["RFQ No.", "Title", "Category", "Sent To", "Quotes", "Status", "Created"]}
+            columns={[
+              t("workspace.table.rfqNo"),
+              t("workspace.table.title"),
+              t("workspace.table.category"),
+              t("workspace.table.sentTo"),
+              t("workspace.table.quotes"),
+              t("workspace.table.status"),
+              t("workspace.table.created"),
+            ]}
             rows={recentRfqs}
           />
         </DashboardPanel>
 
-        <DashboardPanel title="Quick Actions">
+        <DashboardPanel title={t("workspace.buyer.quickActions")}>
           <div className="space-y-2 p-3">
             {[
-              [FileInput, "Create RFQ", "Start a sourcing event", "rfqs"],
-              [ShoppingCart, "Create Purchase Order", "Issue a new PO", "orders"],
-              [UserPlus, "Add Supplier", "Invite and onboard", "suppliers"],
-              [ClipboardCheck, "Purchase Request", "Capture internal demand", "requests"],
-              [Truck, "Track Shipment", "Review inbound logistics", "shipments"],
-              [PackageCheck, "Record GRN", "Confirm goods received", "grn"],
+              [
+                FileInput,
+                t("workspace.buyer.actions.createRfq"),
+                t("workspace.buyer.actions.createRfqSub"),
+                "rfqs",
+              ],
+              [
+                ShoppingCart,
+                t("workspace.buyer.actions.createPo"),
+                t("workspace.buyer.actions.createPoSub"),
+                "orders",
+              ],
+              [
+                UserPlus,
+                t("workspace.buyer.actions.addSupplier"),
+                t("workspace.buyer.actions.addSupplierSub"),
+                "suppliers",
+              ],
+              [
+                ClipboardCheck,
+                t("workspace.buyer.actions.purchaseRequest"),
+                t("workspace.buyer.actions.purchaseRequestSub"),
+                "requests",
+              ],
+              [
+                Truck,
+                t("workspace.buyer.actions.trackShipment"),
+                t("workspace.buyer.actions.trackShipmentSub"),
+                "shipments",
+              ],
+              [
+                PackageCheck,
+                t("workspace.buyer.actions.recordGrn"),
+                t("workspace.buyer.actions.recordGrnSub"),
+                "grn",
+              ],
             ].map(([Icon, title, subtitle, section]) => {
               const ActionIcon = Icon as typeof FileInput;
               return (
