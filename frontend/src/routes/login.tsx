@@ -31,7 +31,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, company, loading, refreshSession } = useAuth();
+  const { user, company, loading } = useAuth();
   const [accountMethod, setAccountMethod] = useState<AuthIdentifierType>("email");
   const [phoneCountry, setPhoneCountry] = useState(defaultPhoneCountry.iso2);
   const [identifier, setIdentifier] = useState("");
@@ -289,6 +289,14 @@ function LoginPage() {
                       onChange={(event) => setPassword(event.target.value)}
                       required
                     />
+                    <div className="text-right">
+                      <Link
+                        className="text-sm font-medium text-foreground underline underline-offset-4"
+                        to="/forgot-password"
+                      >
+                        {t("authPages.login.forgotPasswordLink")}
+                      </Link>
+                    </div>
                   </div>
                 ) : null}
 
