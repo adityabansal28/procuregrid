@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 const keys = ["suppliers", "processed", "categories", "onTime"] as const;
 const values = ["12,400+", "₹840Cr", "47", "99.2%"];

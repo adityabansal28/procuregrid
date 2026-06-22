@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, type TableColumn, type TableRow } from "@/components/ui/table";

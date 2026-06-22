@@ -9,8 +9,7 @@ import {
   Settings2,
   SlidersHorizontal,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "@/lib/translation";
 import { useAuth } from "@/lib/auth";
 import {
   DropdownMenu,
@@ -74,7 +73,6 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          <LanguageSwitcher />
           {!user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -120,19 +118,19 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings2 className="h-4 w-4" />
-                    {t("workspace.pages.settings.title")}
+                    <span>{t("workspace.pages.settings.title")}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/preferences">
                     <SlidersHorizontal className="h-4 w-4" />
-                    {t("workspace.pages.preferences.title")}
+                    <span>{t("workspace.pages.preferences.title")}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/statistics">
                     <BarChart3 className="h-4 w-4" />
-                    {t("workspace.pages.statistics.title")}
+                    <span>{t("workspace.pages.statistics.title")}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

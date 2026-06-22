@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 export function CTA() {
   const { t } = useTranslation();

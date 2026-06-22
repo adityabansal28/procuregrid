@@ -1,5 +1,5 @@
 import { BadgeCheck, Workflow, Lock, Gauge, BarChart3, Network } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 const modules = [
   { icon: BadgeCheck, k: "verification" },

@@ -1,8 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { I18nextProvider, useTranslation } from "react-i18next";
-
+import { I18nextProvider, useTranslation } from "@/lib/translation";
 import appCss from "../styles.css?url";
-import i18n from "../i18n";
 import { AuthProvider } from "@/lib/auth";
 import { Navbar } from "@/components/site/Navbar";
 
@@ -45,7 +43,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -59,7 +57,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <I18nextProvider i18n={i18n}>
+    <I18nextProvider>
       <AuthProvider>
         <div className="min-h-screen bg-background">
           <Navbar />

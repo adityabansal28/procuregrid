@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 const stepKeys = ["s1", "s2", "s3", "s4", "s5", "s6"] as const;
 const numbers = ["01", "02", "03", "04", "05", "06"];

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 import {
   Bell,
   Building2,
@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -208,10 +207,6 @@ export function AppWorkspaceShell({
               ))}
             </div>
           ) : null}
-
-          <div className="hidden sm:block">
-            <LanguageSwitcher />
-          </div>
 
           <Button
             type="button"

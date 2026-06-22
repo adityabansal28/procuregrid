@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { LoaderCircle, ShieldCheck, Smartphone } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

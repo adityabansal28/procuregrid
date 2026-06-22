@@ -1,5 +1,5 @@
 import { ShieldCheck, TrendingUp, FileCheck2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 const features = [
   { icon: ShieldCheck, k: "f1" },

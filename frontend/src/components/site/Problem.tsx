@@ -6,7 +6,7 @@ import {
   EyeOff,
   Banknote,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 
 const pains = [
   { icon: FileSpreadsheet, k: "excel" },

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Factory, LoaderCircle, ShieldCheck } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
-import { upsertProfileForUser } from "@/lib/profile-sync";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import heroImg from "@/assets/hero-factory.jpg";
 
@@ -21,10 +20,50 @@ function AuthCallbackPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { refreshMembership, refreshSession } = useAuth();
+  const { company, loading, refreshSession, user } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const heroBadge = t("authPages.login.heroBadge", {
+    defaultValue: "Verified suppliers, protected procurement",
+  });
+  const callbackTitle = t("authPages.oauthCallback.title", {
+    defaultValue: "Completing sign-in",
+  });
+  const callbackDescription = t("authPages.oauthCallback.description", {
+    defaultValue: "Securely finishing your Google sign-in and loading your workspace.",
+  });
+  const callbackErrorFallback = t("authPages.oauthCallback.errorFallback", {
+    defaultValue: "Google sign-in could not be completed. Please try again.",
+  });
+  const backToLoginLabel = t("authPages.oauthCallback.backToLogin", {
+    defaultValue: "Back to sign in",
+  });
 
   useEffect(() => {
+    if (search.error || search.error_description) {
+      setError(search.error_description || search.error || callbackErrorFallback);
+      return;
+    }
+
+    if (loading || !user) {
+      return;
+    }
+
+    navigate({ to: company ? "/app" : "/onboarding/company", replace: true });
+  }, [
+    callbackErrorFallback,
+    company,
+    loading,
+    navigate,
+    search.error,
+    search.error_description,
+    user,
+  ]);
+
+  useEffect(() => {
+    if (search.error || search.error_description || user) {
+      return;
+    }
+
     let cancelled = false;
 
     async function waitForAuthenticatedUser() {
@@ -46,56 +85,23 @@ function AuthCallbackPage() {
     }
 
     async function completeGoogleAuth() {
-      if (search.error || search.error_description) {
-        setError(
-          search.error_description || search.error || t("authPages.oauthCallback.errorFallback"),
-        );
-        return;
-      }
-
       try {
-        const user = await waitForAuthenticatedUser();
+        const nextUser = await waitForAuthenticatedUser();
 
-        if (!user) {
-          setError(t("authPages.oauthCallback.errorFallback"));
+        if (!nextUser) {
+          setError(callbackErrorFallback);
           return;
         }
 
-        await refreshSession();
+        const nextSession = await refreshSession();
 
-        const fullName =
-          (typeof user.user_metadata.full_name === "string" && user.user_metadata.full_name) ||
-          (typeof user.user_metadata.name === "string" && user.user_metadata.name) ||
-          null;
-
-        if (user.email) {
-          const { error: profileError } = await upsertProfileForUser(user, {
-            fullName,
-            authIdentifierType: "email",
-            contactEmail: user.email,
-            contactPhoneE164: null,
-          });
-
-          if (profileError) {
-            setError(profileError.message);
-            return;
-          }
+        if (!nextSession.user) {
+          setError(callbackErrorFallback);
+          return;
         }
-
-        const membershipState = await refreshMembership();
-        if (cancelled) return;
-
-        navigate({
-          to: membershipState.company ? "/app" : "/onboarding/company",
-          replace: true,
-        });
       } catch (nextError) {
         if (cancelled) return;
-        setError(
-          nextError instanceof Error
-            ? nextError.message
-            : t("authPages.oauthCallback.errorFallback"),
-        );
+        setError(nextError instanceof Error ? nextError.message : callbackErrorFallback);
       }
     }
 
@@ -104,7 +110,7 @@ function AuthCallbackPage() {
     return () => {
       cancelled = true;
     };
-  }, [navigate, refreshMembership, refreshSession, search.error, search.error_description, t]);
+  }, [callbackErrorFallback, refreshSession, search.error, search.error_description, user]);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-[image:var(--gradient-subtle)]">
@@ -121,14 +127,10 @@ function AuthCallbackPage() {
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur">
                 <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-                {t("authPages.login.heroBadge")}
+                {heroBadge}
               </div>
-              <h1 className="mt-6 text-4xl font-bold leading-tight">
-                {t("authPages.oauthCallback.title")}
-              </h1>
-              <p className="mt-4 text-lg text-white/75">
-                {t("authPages.oauthCallback.description")}
-              </p>
+              <h1 className="mt-6 text-4xl font-bold leading-tight">{callbackTitle}</h1>
+              <p className="mt-4 text-lg text-white/75">{callbackDescription}</p>
             </div>
           </div>
         </div>
@@ -140,10 +142,8 @@ function AuthCallbackPage() {
                 <Factory className="h-5 w-5" />
               </div>
               <div>
-                <CardTitle className="text-2xl">{t("authPages.oauthCallback.title")}</CardTitle>
-                <CardDescription className="mt-2">
-                  {t("authPages.oauthCallback.description")}
-                </CardDescription>
+                <CardTitle className="text-2xl">{callbackTitle}</CardTitle>
+                <CardDescription className="mt-2">{callbackDescription}</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -151,13 +151,13 @@ function AuthCallbackPage() {
                 <>
                   <p className="text-sm text-destructive">{error}</p>
                   <Button asChild className="w-full" variant="outline">
-                    <Link to="/login">{t("authPages.oauthCallback.backToLogin")}</Link>
+                    <Link to="/login">{backToLoginLabel}</Link>
                   </Button>
                 </>
               ) : (
                 <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/35 px-4 py-3 text-sm text-muted-foreground">
                   <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
-                  {t("authPages.oauthCallback.description")}
+                  {callbackDescription}
                 </div>
               )}
             </CardContent>

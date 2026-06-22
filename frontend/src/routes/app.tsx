@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/translation";
 import { AppWorkspaceShell } from "@/components/app/AppWorkspaceShell";
 import { BuyerWorkspace } from "@/components/app/BuyerWorkspace";
 import { SupplierWorkspace } from "@/components/app/SupplierWorkspace";
