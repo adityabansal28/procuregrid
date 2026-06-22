@@ -27,6 +27,24 @@ function AuthCallbackPage() {
   useEffect(() => {
     let cancelled = false;
 
+    async function waitForAuthenticatedUser() {
+      const supabase = getSupabaseBrowserClient();
+
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session?.user) {
+          return session.user;
+        }
+
+        await new Promise((resolve) => window.setTimeout(resolve, 250));
+      }
+
+      return null;
+    }
+
     async function completeGoogleAuth() {
       if (search.error || search.error_description) {
         setError(
@@ -36,14 +54,14 @@ function AuthCallbackPage() {
       }
 
       try {
-        const supabase = getSupabaseBrowserClient();
-        const nextState = await refreshSession();
-        const user = nextState.user;
+        const user = await waitForAuthenticatedUser();
 
         if (!user) {
           setError(t("authPages.oauthCallback.errorFallback"));
           return;
         }
+
+        await refreshSession();
 
         const fullName =
           (typeof user.user_metadata.full_name === "string" && user.user_metadata.full_name) ||
