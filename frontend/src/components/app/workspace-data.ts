@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Building2,
   Boxes,
   ClipboardCheck,
   CreditCard,
@@ -44,6 +45,7 @@ export const buyerNavItems: WorkspaceNavItem[] = [
 
 export const supplierNavItems: WorkspaceNavItem[] = [
   { id: "dashboard", labelKey: "workspace.nav.dashboard", icon: LayoutDashboard },
+  { id: "my-info", labelKey: "workspace.nav.myInfo", icon: Building2 },
   { id: "opportunities", labelKey: "workspace.nav.opportunities", icon: FileInput, badge: "9" },
   { id: "quotes", labelKey: "workspace.nav.myQuotes", icon: FileText, badge: "6" },
   { id: "orders", labelKey: "workspace.nav.salesOrders", icon: ShoppingCart, badge: "11" },
@@ -109,6 +111,10 @@ export const buyerSectionCopy: Record<string, { titleKey: string; descriptionKey
 };
 
 export const supplierSectionCopy: Record<string, { titleKey: string; descriptionKey: string }> = {
+  "my-info": {
+    titleKey: "workspace.sections.supplier.myInfo.title",
+    descriptionKey: "workspace.sections.supplier.myInfo.description",
+  },
   opportunities: {
     titleKey: "workspace.sections.supplier.opportunities.title",
     descriptionKey: "workspace.sections.supplier.opportunities.description",

@@ -6,6 +6,8 @@ type CompanyRecord = {
   id: string;
   name: string;
   company_type: "buyer" | "supplier" | "hybrid";
+  business_type: string | null;
+  onboarding_status: string | null;
   gst_number: string | null;
   pan_number: string | null;
   industry_category: string | null;

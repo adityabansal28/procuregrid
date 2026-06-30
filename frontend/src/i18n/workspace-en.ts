@@ -35,6 +35,7 @@ export const workspaceEn = {
       grn: "GRN",
       invoices: "Invoices",
       payments: "Payments",
+      myInfo: "My Info",
       suppliers: "Suppliers",
       catalog: "Catalog",
       reports: "Reports & Analytics",
@@ -240,6 +241,11 @@ export const workspaceEn = {
         default: {
           title: "Supplier Workspace",
           description: "This supplier module is ready for backend integration.",
+        },
+        myInfo: {
+          title: "My Info",
+          description:
+            "Review the company, legal, address, and catalog details captured during signup.",
         },
         opportunities: {
           title: "RFQ Opportunities",

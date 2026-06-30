@@ -20,6 +20,7 @@ import {
   MetricCard,
   StatusPill,
 } from "@/components/app/DashboardPrimitives";
+import { SupplierMyInfoSection } from "@/components/app/SupplierMyInfoSection";
 import { supplierSectionCopy } from "@/components/app/workspace-data";
 import { Button } from "@/components/ui/button";
 
@@ -47,6 +48,10 @@ export function SupplierWorkspace({
   displayName: string;
 }) {
   const { t, i18n } = useTranslation();
+
+  if (activeSection === "my-info") {
+    return <SupplierMyInfoSection />;
+  }
 
   if (activeSection !== "dashboard") {
     const section = supplierSectionCopy[activeSection] ?? {
